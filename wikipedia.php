@@ -38,18 +38,25 @@ $wiki_api_links = array(
 	'specieswiki' => 'https://species.wikipedia.org/w/api.php',
 );
 
+$limit = 500;
+
 $base_parameters = array(
 	'action' 	=> 'query',
 	'euquery' 	=> 'biodiversitylibrary.org',
 	'format' 	=> 'json',
 	'list'		=> 'exturlusage',
-	'eulimit'	=> 100
+	'eulimit'	=> $limit 
 );
 
-$eucontinue = 0;
+
 
 $done = false;
+
+$eucontinue = 0;
 $count = 0;
+
+//$eucontinue = 325976;
+//$count 		= 479678;
 
 $wiki = 'specieswiki';
 
