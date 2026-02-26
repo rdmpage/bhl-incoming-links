@@ -2,3 +2,9 @@
 
 specieswiki/
 !specieswiki/README.md
+
+/junk/
+/to do/
+
+*.db-shm
+*.db-wal

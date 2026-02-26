@@ -1,7 +1,7 @@
 <?php
 
-// Given a list of links to BHL pages, attempt to resolve to PageIDs.
-// Links might be direct page links, but also offsets in items, and 
+// Given a list of links to BHL pages from English language Wikipedia, attempt to resolve 
+// to PageIDs. Links might be direct page links, but also offsets in items, and 
 // even links to Internet Archive pages.
 
 //----------------------------------------------------------------------------------------
@@ -40,7 +40,9 @@ function get($url, $format = '')
 
 //----------------------------------------------------------------------------------------
 
-$filename = 'specieswiki.tsv';
+$filename = 'links.tsv';
+$filename = 'enwiki-todo.tsv';
+
 
 $headings = array();
 
@@ -79,34 +81,34 @@ while (!feof($file_handle))
 		
 			//print_r($obj);	
 			
-			echo "-- " . $obj->bhl . "\n";
+			echo "-- " . $obj->el_to_path . "\n";
 			
-			if (preg_match('/^(item|page|title)\/\d+$/', $obj->bhl))
+			if (preg_match('/^\/(item|page|title)\/\d+$/', $obj->el_to_path))
 			{
 				// direct link to BHL page
-				if (preg_match('/^page\/(\d+)$/', $obj->bhl, $m))
+				if (preg_match('/^\/page\/(\d+)$/', $obj->el_to_path, $m))
 				{
-					$sql = 'UPDATE specieswiki SET pageid=' . $m[1] . ' WHERE id="' . $obj->id . '" AND bhl="' . $obj->bhl . '";';
+					$sql = 'UPDATE enwiki SET pageid=' . $m[1] . ' WHERE el_id="' . $obj->el_id . '";';
 					echo $sql . "\n";
 				}
 				
 			}
 			else
 			{
-				$url = 'http://localhost/microcitation-parser/bhlurl.php?url=' . urlencode('http://www.biodiversitylibrary.org/' . $obj->bhl);
+				$url = 'http://localhost/microcitation-parser/bhlurl.php?url=' . urlencode('http://www.biodiversitylibrary.org' . $obj->el_to_path);
 				$json = get($url);
 				
 				$result = json_decode($json);
 				
 				if ($result)
 				{
-					// print_r($result);
+					//print_r($result);
 				
 					if ($result->status == 200)
 					{
 						if (count($result->data->BHLPAGEID) > 0)
 						{					
-							$sql = 'UPDATE specieswiki SET pageid=' . $result->data->BHLPAGEID[0] . ' WHERE id="' . $obj->id . '" AND bhl="' . $obj->bhl . '";';
+							$sql = 'UPDATE enwiki SET pageid=' . $result->data->BHLPAGEID[0] . ' WHERE el_id="' . $obj->el_id . '";';
 							echo $sql . "\n";
 						}
 					}
